@@ -75,11 +75,18 @@ def triangulate(C1, pts1, C2, pts2):
     pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1))))
     
     def fun(p, C1, pts1_hom, C2, pts2_hom):
-        P = p.reshape((3,1))
-        err1 = C1 @ np.vstack((P, 1))
-        err2 = C2 @ np.vstack((P, 1))
-        return np.concatenate((err1[:2,:] / err1[2,:] - pts1_hom.T, err2[:2,:] / err2[2,:] - pts2_hom.T), axis=None)
-    
+        P = p.reshape((-1, 3)).T
+        err1 = C1 @ np.vstack((P, np.ones((1, P.shape[1]))))
+        err2 = C2 @ np.vstack((P, np.ones((1, P.shape[1]))))
+        denom1 = err1[2,:]
+        denom1[np.isclose(denom1, 0, atol=1e-15)] = 1e-15  # Replace zeros with a small value
+        err1 /= denom1
+        denom2 = err2[2,:]
+        denom2[np.isclose(denom2, 0, atol=1e-15)] = 1e-15  # Replace zeros with a small value
+        err2 /= denom2
+        pts1_hom_3d = np.vstack((pts1_hom.T, np.ones((1, pts1_hom.shape[0]))))
+        pts2_hom_3d = np.vstack((pts2_hom.T, np.ones((1, pts2_hom.shape[0]))))
+        return np.concatenate((err1[:2,:] - pts1_hom_3d[:2,:], err2[:2,:] - pts2_hom_3d[:2,:]), axis=None)
     P0 = np.zeros((pts1.shape[0], 3))
     
     res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom), method='lm')
