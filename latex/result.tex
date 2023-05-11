@@ -3,7 +3,15 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{tocloft}
+\usepackage{subfiles}
+\usepackage{multicol}
+\usepackage{etoolbox,refcount}
+\usepackage{subfiles}
+\usepackage{titlesec}
+\usepackage{float}
 \title{COMP4901V Homework 2 Result}
 \author{Leung Cheuk Wai 20771710}
 \date{\today}
@@ -184,4 +192,28 @@ From previous part, we got
     where $t_\times$ is the skew-symmetric matrix associated with the translation vector $t$. We can see that $F$ is skew-symmetric, which is a necessary condition for it to be a fundamental matrix.
     
     Therefore, we have shown that the situation where a camera views an object and its reflection in a plane mirror is equivalent to having two images of the object which are related by a skew-symmetric fundamental matrix $F$.
-\end{document}
+    \section*{2.3.1}
+
+    \begin{figure}[H]
+        \centering
+              \includegraphics[width=0.9\linewidth]{../homework/2_3_1_fig1.png}
+    \end{figure}
+    \section*{2.3.2}
+
+    F=$\begin{bmatrix}
+        -5.97922004e-09&2.70507872e-06&-4.80653911e-04\\
+        -2.73270810e-06&2.40193171e-08&1.51659975e-03\\
+        4.93132249e-04&-1.53443457e-03&8.04959398e-05
+    \end{bmatrix}$\\
+    \begin{figure}[H]
+        \centering
+              \includegraphics[width=0.9\linewidth]{../homework/2_3_2_displayEpipolarF.png}
+    \end{figure}
+    \section*{2.4.1}
+
+    E=$\begin{bmatrix}
+        -0.9619097   &0.95043229  &0.02607589\\
+        -0.96961847 &-0.96297204  &0.08419544\\
+        -0.05463304  &0.04340594  &0.00179982
+    \end{bmatrix}$\\
+    \end{document}

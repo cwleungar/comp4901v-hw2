@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.3.19)  11 MAY 2023 11:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.3.19)  11 MAY 2023 22:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/latex/result.tex"
-(c:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/latex/result.tex
+**c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.tex
+(c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.tex
 LaTeX2e <2020-10-01> patch level 4
 L3 programming layer <2021-02-18> (c:/texlive/2020/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
@@ -107,27 +107,180 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ) (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
+) (c:/texlive/2020/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2020/08/30 v1.4c Standard LaTeX Graphics (DPC,SPQR)
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+) (c:/texlive/2020/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+ (c:/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen156
+\Gin@req@width=\dimen157
+) (c:/texlive/2020/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2011/12/19 v6.7a set line spacing
+) (c:/texlive/2020/texmf-dist/tex/latex/tocloft/tocloft.sty
+Package: tocloft 2017/08/31 v2.3i parameterised ToC, etc., typesetting
+Package tocloft Info: The document has section divisions on input line 51.
+\cftparskip=\skip52
+\cftbeforetoctitleskip=\skip53
+\cftaftertoctitleskip=\skip54
+\cftbeforepartskip=\skip55
+\cftpartnumwidth=\skip56
+\cftpartindent=\skip57
+\cftbeforesecskip=\skip58
+\cftsecindent=\skip59
+\cftsecnumwidth=\skip60
+\cftbeforesubsecskip=\skip61
+\cftsubsecindent=\skip62
+\cftsubsecnumwidth=\skip63
+\cftbeforesubsubsecskip=\skip64
+\cftsubsubsecindent=\skip65
+\cftsubsubsecnumwidth=\skip66
+\cftbeforeparaskip=\skip67
+\cftparaindent=\skip68
+\cftparanumwidth=\skip69
+\cftbeforesubparaskip=\skip70
+\cftsubparaindent=\skip71
+\cftsubparanumwidth=\skip72
+\cftbeforeloftitleskip=\skip73
+\cftafterloftitleskip=\skip74
+\cftbeforefigskip=\skip75
+\cftfigindent=\skip76
+\cftfignumwidth=\skip77
+\c@lofdepth=\count268
+\c@lotdepth=\count269
+\cftbeforelottitleskip=\skip78
+\cftafterlottitleskip=\skip79
+\cftbeforetabskip=\skip80
+\cfttabindent=\skip81
+\cfttabnumwidth=\skip82
+) (c:/texlive/2020/texmf-dist/tex/latex/subfiles/subfiles.sty
+Package: subfiles 2020/11/14 v2.2 Multi-file projects (package)
+ (c:/texlive/2020/texmf-dist/tex/latex/import/import.sty
+Package: import 2020/04/01  v 6.2
+)) (c:/texlive/2020/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
+\c@tracingmulticols=\count270
+\mult@box=\box49
+\multicol@leftmargin=\dimen158
+\c@unbalance=\count271
+\c@collectmore=\count272
+\doublecol@number=\count273
+\multicoltolerance=\count274
+\multicolpretolerance=\count275
+\full@width=\dimen159
+\page@free=\dimen160
+\premulticols=\dimen161
+\postmulticols=\dimen162
+\multicolsep=\skip83
+\multicolbaselineskip=\skip84
+\partial@page=\box50
+\last@line=\box51
+\maxbalancingoverflow=\dimen163
+\mult@rightbox=\box52
+\mult@grightbox=\box53
+\mult@gfirstbox=\box54
+\mult@firstbox=\box55
+\@tempa=\box56
+\@tempa=\box57
+\@tempa=\box58
+\@tempa=\box59
+\@tempa=\box60
+\@tempa=\box61
+\@tempa=\box62
+\@tempa=\box63
+\@tempa=\box64
+\@tempa=\box65
+\@tempa=\box66
+\@tempa=\box67
+\@tempa=\box68
+\@tempa=\box69
+\@tempa=\box70
+\@tempa=\box71
+\@tempa=\box72
+\@tempa=\box73
+\@tempa=\box74
+\@tempa=\box75
+\@tempa=\box76
+\@tempa=\box77
+\@tempa=\box78
+\@tempa=\box79
+\@tempa=\box80
+\@tempa=\box81
+\@tempa=\box82
+\@tempa=\box83
+\@tempa=\box84
+\@tempa=\box85
+\@tempa=\box86
+\@tempa=\box87
+\@tempa=\box88
+\@tempa=\box89
+\@tempa=\box90
+\@tempa=\box91
+\@tempa=\box92
+\c@minrows=\count276
+\c@columnbadness=\count277
+\c@finalcolumnbadness=\count278
+\last@try=\dimen164
+\multicolovershoot=\dimen165
+\multicolundershoot=\dimen166
+\mult@nat@firstbox=\box93
+\colbreak@box=\box94
+\mc@col@check@num=\count279
+) (c:/texlive/2020/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count280
+) (c:/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+ (c:/texlive/2020/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+) (c:/texlive/2020/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)) (c:/texlive/2020/texmf-dist/tex/latex/titlesec/titlesec.sty
+Package: titlesec 2019/10/16 v2.13 Sectioning titles
+\ttl@box=\box95
+\beforetitleunit=\skip85
+\aftertitleunit=\skip86
+\ttl@plus=\dimen167
+\ttl@minus=\dimen168
+\ttl@toksa=\toks22
+\titlewidth=\dimen169
+\titlewidthlast=\dimen170
+\titlewidthfirst=\dimen171
+) (c:/texlive/2020/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count281
+\float@exts=\toks23
+\float@box=\box96
+\@float@everytoks=\toks24
+\@floatcapt=\box97
 ) (c:/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2021-03-02 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count268
-\l__pdf_internal_box=\box49
-) (c:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/latex/result.aux)
+\l__color_backend_stack_int=\count282
+\l__pdf_internal_box=\box98
+) (c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.aux)
 \openout1 = `result.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -163,34 +316,74 @@ LaTeX Font Info:    ... okay on input line 11.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 13.
-(c:/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
+(c:/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count283
+\scratchdimen=\dimen172
+\scratchbox=\box99
+\nofMPsegments=\count284
+\nofMParguments=\count285
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count286
+\MPscratchDim=\dimen173
+\MPnumerator=\count287
+\makeMPintoPDFobject=\count288
+\everyMPtoPDFconversion=\toks26
+) (c:/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (c:/texlive/2020/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+LaTeX Font Info:    Trying to load font information for U+msa on input line 21.
+ (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 13.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 21.
  (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 142--155
+Underfull \hbox (badness 10000) in paragraph at lines 150--163
 
  []
 
-[2] [3] (c:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/latex/result.aux) ) 
+[2]
+<../homework/2_3_1_fig1.png, id=21, 2461.195pt x 371.3875pt>
+File: ../homework/2_3_1_fig1.png Graphic file (type png)
+<use ../homework/2_3_1_fig1.png>
+Package pdftex.def Info: ../homework/2_3_1_fig1.png  used on input line 199.
+(pdftex.def)             Requested size: 422.77664pt x 63.79239pt.
+<../homework/2_3_2_displayEpipolarF.png, id=22, 867.24pt x 650.43pt>
+File: ../homework/2_3_2_displayEpipolarF.png Graphic file (type png)
+<use ../homework/2_3_2_displayEpipolarF.png>
+Package pdftex.def Info: ../homework/2_3_2_displayEpipolarF.png  used on input line 210.
+(pdftex.def)             Requested size: 422.77664pt x 317.08583pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 203--211
+
+ []
+
+[3 <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_3_1_fig1.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 214--219
+
+ []
+
+[4 <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_3_2_displayEpipolarF.png>] (c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.aux) ) 
 Here is how much of TeX's memory you used:
- 2103 strings out of 479014
- 28321 string characters out of 5863086
- 349741 words of memory out of 5000000
- 19603 multiletter control sequences out of 15000+600000
+ 4228 strings out of 479014
+ 58112 string characters out of 5863086
+ 392058 words of memory out of 5000000
+ 21651 multiletter control sequences out of 15000+600000
  410678 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 68i,15n,74p,314b,213s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 68i,15n,74p,294b,226s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on "c:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/latex/result.pdf" (3 pages, 122165 bytes).
+Output written on c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.pdf (4 pages, 1566657 bytes).
 PDF statistics:
- 62 PDF objects out of 1000 (max. 8388607)
- 44 compressed objects within 1 object stream
+ 69 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
