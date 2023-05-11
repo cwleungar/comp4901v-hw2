@@ -55,7 +55,7 @@ def displayEpipolarF(I1, I2, F):
             ys = -(l[0] * xs + l[2])/l[1]
 
         # plt.plot(x,y, '*', 'MarkerSize', 6, 'LineWidth', 2)
-        ax1.plot(x, y, '*', MarkerSize=6, linewidth=2)
+        ax1.plot(x, y, '*', markersize=6, linewidth=2)
         ax2.plot([xs, xe], [ys, ye], linewidth=2)
         plt.draw()
 
@@ -144,7 +144,7 @@ def epipolarMatchGUI(I1, I2, F):
             ys = -(l[0] * xs + l[2])/l[1]
 
         # plt.plot(x,y, '*', 'MarkerSize', 6, 'LineWidth', 2)
-        ax1.plot(x, y, '*', MarkerSize=6, linewidth=2)
+        ax1.plot(x, y, '*', markersize=6, linewidth=2)
         ax2.plot([xs, xe], [ys, ye], linewidth=2)
 
         # draw points
