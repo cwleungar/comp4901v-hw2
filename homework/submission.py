@@ -96,7 +96,7 @@ def triangulate(C1, pts1, C2, pts2):
         return np.concatenate((err1[:2,:] - pts1_hom_3d[:2,:], err2[:2,:] - pts2_hom_3d[:2,:]), axis=None)
     P0 = np.zeros((pts1.shape[0], 3))
     
-    res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom), method='lm')
+    res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom))
     P = res.x.reshape((-1, 3))
     
     pts1_proj = C1 @ np.vstack((P.T, np.ones((1, P.shape[0]))))
