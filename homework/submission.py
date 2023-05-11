@@ -19,28 +19,35 @@ Q2.3.2: Eight Point algorithm
 
 
 def eightpoint(pts1, pts2, M):
-    # Replace pass by your implementation
-
+    # Scale the point coordinates by M
     pts1 = pts1 / M
     pts2 = pts2 / M
-    
-    a1 = np.hstack((pts1, np.ones((pts1.shape[0], 1))))
-    a2 = np.hstack((pts2, np.ones((pts2.shape[0], 1))))
-    a = np.kron(a1, a2)
-    a = a.reshape((a1.shape[0], a2.shape[0], 9))
-    a = a.transpose((2, 0, 1)).reshape((9, -1)).T
-    _, _, v = svd(a)
-    
-    
-    f = v[-1,:].reshape((3,3))
-    u, s, v = svd(f)
+
+    # Construct the A matrix
+    N = pts1.shape[0]
+    A = np.zeros((N, 9))
+    for i in range(N):
+        x, y = pts1[i]
+        u, v = pts2[i]
+        A[i] = [x*u, x*v, x, y*u, y*v, y, u, v, 1]
+
+    # Solve the homogeneous linear system using SVD
+    _, _, V = svd(A)
+    F = V[-1].reshape(3, 3)
+
+    # Enforce the singularity constraint on F
+    U, s, Vt = svd(F)
     s[2] = 0
-    f = u @ np.diag(s) @ v
-    f = helper.refineF(f, pts1, pts2)
-    t = np.diag([1/M, 1/M, 1])
-    f = t.T @ f @ t
-    
-    return f
+    F = U @ np.diag(s) @ Vt
+
+    # Refine the solution using local minimization
+    F = helper.refineF(F, pts1, pts2)
+
+    # Unscale the fundamental matrix
+    T = np.diag([1/M, 1/M, 1])
+    F = T.T @ F @ T
+
+    return F
     pass
 
 
@@ -75,11 +82,18 @@ def triangulate(C1, pts1, C2, pts2):
     pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1))))
     
     def fun(p, C1, pts1_hom, C2, pts2_hom):
-        P = p.reshape((3,1))
-        err1 = C1 @ np.vstack((P, 1))
-        err2 = C2 @ np.vstack((P, 1))
-        return np.concatenate((err1[:2,:] / err1[2,:] - pts1_hom.T, err2[:2,:] / err2[2,:] - pts2_hom.T), axis=None)
-    
+        P = p.reshape((-1, 3)).T
+        err1 = C1 @ np.vstack((P, np.ones((1, P.shape[1]))))
+        err2 = C2 @ np.vstack((P, np.ones((1, P.shape[1]))))
+        denom1 = err1[2,:]
+        denom1[np.isclose(denom1, 0, atol=1e-15)] = 1e-15  # Replace zeros with a small value
+        err1 /= denom1
+        denom2 = err2[2,:]
+        denom2[np.isclose(denom2, 0, atol=1e-15)] = 1e-15  # Replace zeros with a small value
+        err2 /= denom2
+        pts1_hom_3d = np.vstack((pts1_hom.T, np.ones((1, pts1_hom.shape[0]))))
+        pts2_hom_3d = np.vstack((pts2_hom.T, np.ones((1, pts2_hom.shape[0]))))
+        return np.concatenate((err1[:2,:] - pts1_hom_3d[:2,:], err2[:2,:] - pts2_hom_3d[:2,:]), axis=None)
     P0 = np.zeros((pts1.shape[0], 3))
     
     res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom), method='lm')
@@ -107,7 +121,79 @@ Q2.5.1: 3D visualization of the temple images.
 
 '''
 def epipolarCorrespondence(im1, im2, f, x1, y1):
+    def find_matching_point(im1, im2, x1, y1, F, window_size=5, sigma=1.0):
+        # Compute the window around the point (x1, y1) in im1
+        half_window_size = window_size // 2
+        x1_min = max(x1 - half_window_size, 0)
+        x1_max = min(x1 + half_window_size + 1, im1.shape[1])
+        y1_min = max(y1 - half_window_size, 0)
+        y1_max = min(y1 + half_window_size + 1, im1.shape[0])
+        window1 = im1[y1_min:y1_max, x1_min:x1_max, :]
+
+        # Compute the Gaussian kernel for weighting the window
+        kernel = np.zeros((window_size, window_size))
+        center = (window_size - 1) / 2
+        for i in range(window_size):
+            for j in range(window_size):
+                kernel[i, j] = np.exp(-((i - center)**2 + (j - center)**2) / (2 * sigma**2))
+
+        # Normalize the kernel
+        kernel /= np.sum(kernel)
+
+        # Find the best match in im2
+        best_match_distance = np.inf
+        best_match_x = None
+        best_match_y = None
+        for x2, y2 in zip(x_range, y_range):
+            # Compute the window around the point (x2, y2) in im2
+            x2_min = max(int(x2) - half_window_size, 0)
+            x2_max = min(int(x2) + half_window_size + 1, im2.shape[1])
+            y2_min = max(int(y2) - half_window_size, 0)
+            y2_max = min(int(y2) + half_window_size + 1, im2.shape[0])
+            window2 = im2[y2_min:y2_max, x2_min:x2_max, :]
+            output_shape = (5, 5, 3)
+            pad_along_height = max((output_shape[0] - window2.shape[0]), 0)
+            pad_along_width = max((output_shape[1] - window2.shape[1]), 0)
+            pad_top = pad_along_height // 2
+            pad_bottom = pad_along_height - pad_top
+            pad_left = pad_along_width // 2
+            pad_right = pad_along_width - pad_left
+            
+            # Pad the image along each dimension
+            window2_padded = np.pad(window2, ((pad_top, pad_bottom), (pad_left, pad_right), (0, 0)), mode='constant')
+            # Apply the Gaussian weighting to the windows
+            window1_weighted = np.zeros_like(window1)
+            window2_weighted = np.zeros_like(window2_padded)
+            for i in range(3):
+                window1_weighted[..., i] = window1[..., i] * kernel
+                window2_weighted[..., i] = window2_padded[..., i] * kernel
+
+            # Compute the distance between the windows
+            distance = np.sum((window1_weighted - window2_weighted)**2)
+
+            # Update the best match if the distance is smaller
+            if distance < best_match_distance:
+                best_match_distance = distance
+                best_match_x = x2
+                best_match_y = y2
+
+        return best_match_x, best_match_y
     # Replace pass by your implementation
+        # Compute the epipolar line in im2 corresponding to the point (x1, y1) in im1
+    epipolar_line = f @ np.array([x1, y1, 1])
+    a, b, c = epipolar_line
+    
+    # Compute the range of possible y-coordinates in im2 for the given x-coordinate
+    y_range = np.arange(im2.shape[0])
+    x_range = (-c - b*y_range) / a
+    valid_mask = (x_range >= 0) & (x_range < im2.shape[1])
+    x_range = x_range[valid_mask]
+    y_range = y_range[valid_mask]
+    
+    # Find the best match in im2 using the find_matching_point function
+    x2, y2 = find_matching_point(im1, im2, x1, y1, f)
+    
+    return x2, y2
     pass
 
 '''
