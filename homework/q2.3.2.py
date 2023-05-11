@@ -11,6 +11,7 @@ pts2 = data['dst_points'][0:100]
 print(img1.shape)
 M=max(img1.shape[0],img1.shape[0])
 F = eightpoint(pts1, pts2, M)
+print(F)
 np.savez('q2.3_2.npz', F=F, M=M)
 
 displayEpipolarF(img1, img2, F)
