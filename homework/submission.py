@@ -304,32 +304,23 @@ def essentialDecomposition(im1, im2, k1, k2):
     for m, n in matches:
         if m.distance < 0.7 * n.distance:
             good_matches.append(m)
-
     # Convert keypoint coordinates to numpy arrays
-    src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
-    dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+    src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches])
+    dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches])
+    M=max(im1.shape[0],im1.shape[1],im2.shape[0],im2.shape[1])
+    F= eightpoint(src_pts, dst_pts, M)
+    E = essentialMatrix(F, k1,k2)
 
-    # Estimate the fundamental matrix
-    F, _ = cv2.findFundamentalMat(src_pts, dst_pts, cv2.FM_8POINT)
-
-    # Estimate the essential matrix
-    E = np.dot(np.transpose(k2), np.dot(F, k1))
-
-    # Perform SVD on the essential matrix
-    U, _, Vt = np.linalg.svd(E)
-
-    # Ensure that the singular values are consistent
-    if np.linalg.det(U) < 0:
-        U *= -1
-    if np.linalg.det(Vt) < 0:
-        Vt *= -1
-
-    # Compute the rotation matrix and translation vector
+    # Compute the decomposition of the essential matrix
+    U, _, Vt = svd(E)
     W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
-    R = U @ W @ Vt
+    R1 = U @ W @ Vt
     t = U[:, 2]
-
-    return [R, t]
+    # Choose the correct translation vector
+    if t[2] < 0:
+        t *= -1
+    # Return the two possible solutions for rotation and translation
+    return [R1, t]
 
 
 '''
