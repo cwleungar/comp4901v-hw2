@@ -61,9 +61,6 @@ Q2.4.1: Compute the essential matrix E.
 def essentialMatrix(f, K1, K2):
     # Replace pass by your implementation
     e = K2.T @ f @ K1
-    u, s, v = np.linalg.svd(e)
-    s[2] = 0
-    e = u @ np.diag(s) @ v.T
     return e
     pass
 
@@ -76,7 +73,7 @@ Q2.4.2: Triangulate a set of 2D coordinates in the image to a set of 3D points.
     Output: P, the Nx3 matrix with the corresponding 3D points per row
             err, the reprojection error.
 '''
-def triangulate2(C1, pts1, C2, pts2):
+def triangulate(C1, pts1, C2, pts2):
     # Replace pass by your implementation
     pts1_hom = np.hstack((pts1, np.ones((pts1.shape[0], 1), dtype=float)))
     pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1),dtype=float)))
@@ -108,50 +105,7 @@ def triangulate2(C1, pts1, C2, pts2):
     return P, err
     pass
 
-def triangulate(C1, pts1, C2, pts2):
-    pts1_hom = np.hstack((pts1, np.ones((pts1.shape[0], 1))))
-    pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1))))
 
-    # Normalize the coordinates
-    T1 = np.array([[2/pts1_hom.shape[0], 0, -1],
-                   [0, 2/pts1_hom.shape[0], -1],
-                   [0, 0, 1]])
-    T2 = np.array([[2/pts2_hom.shape[0], 0, -1],
-                   [0, 2/pts2_hom.shape[0], -1],
-                   [0, 0, 1]])
-    pts1_norm = (T1 @ pts1_hom.T).T
-    pts2_norm = (T2 @ pts2_hom.T).T
-
-    # Stack the camera matrices
-    P1 = C1[:, :3]
-    P2 = C2[:, :3]
-    P = np.vstack((P1, P2))
-
-    # Compute the null space of the stacked camera matrices
-    _, _, Vt = np.linalg.svd(P)
-    X_hom = Vt[-1, :4]
-
-    # Define the function to minimize
-    def fun(X_hom, C1, pts1_hom, C2, pts2_hom):
-        err1_hom = C1 @ X_hom - pts1_hom.T
-        err2_hom = C2 @ X_hom - pts2_hom.T
-        return np.concatenate((err1_hom.flatten(), err2_hom.flatten()))
-
-    # Use least squares to optimize the 3D points
-    X_hom_norm, _ = least_squares(fun, X_hom, args=(C1, pts1_norm, C2, pts2_norm), method='lm')
-    
-    # Denormalize the coordinates
-    X_hom_denorm = np.linalg.inv(T1) @ X_hom_norm
-    X_hom_denorm = X_hom_denorm / X_hom_denorm[-1]
-
-    # Compute the reprojection error
-    pts1_proj = C1 @ X_hom_denorm
-    pts2_proj = C2 @ X_hom_denorm
-    err1 = np.linalg.norm(pts1_hom[:,:2] - pts1_proj[:2,:].T, axis=1)
-    err2 = np.linalg.norm(pts2_hom[:,:2] - pts2_proj[:2,:].T, axis=1)
-    err = np.sum(err1**2 + err2**2)
-
-    return X_hom_denorm[:3], err
 
 
 '''
