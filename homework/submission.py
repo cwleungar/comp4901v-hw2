@@ -41,7 +41,7 @@ def eightpoint(pts1, pts2, M):
     F = U @ np.diag(s) @ Vt
 
     # Refine the solution using local minimization
-    F = helper.refineF(F, pts1, pts2)
+    #F = helper.refineF(F, pts1, pts2)
 
     # Unscale the fundamental matrix
     T = np.diag([1/M, 1/M, 1])
@@ -282,31 +282,45 @@ Q3.1: Decomposition of the essential matrix to rotation and translation.
 '''
 def essentialDecomposition(im1, im2, k1, k2):
     import cv2
+    from skimage.measure import ransac
+    from skimage.transform import AffineTransform
     # Convert images to grayscale
-    gray1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    gray2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+    gray_img1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    gray_img2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
-    # Use ORB feature detector and descriptor
-    orb = cv2.ORB_create()
 
-    # Use Flann-based matcher
-    flann = cv2.FlannBasedMatcher()
+    sift = cv2.SIFT_create()
 
-    # Detect and match features
-    kp1, des1 = orb.detectAndCompute(gray1, None)
-    kp2, des2 = orb.detectAndCompute(gray2, None)
-    des1 = np.float32(des1)
-    des2 = np.float32(des2)
-    matches = flann.knnMatch(des1, des2, k=2)
 
-    # Filter matches using Lowe's ratio test
+    keypoints1, descriptors1 = sift.detectAndCompute(gray_img1, None)
+    keypoints2, descriptors2 = sift.detectAndCompute(gray_img2, None)
+
+
+    bf_matcher = cv2.FlannBasedMatcher()
+
+
+    matches = bf_matcher.knnMatch(descriptors1, descriptors2, k=2)
+
     good_matches = []
-    for m, n in matches:
-        if m.distance < 0.7 * n.distance:
-            good_matches.append(m)
-    # Convert keypoint coordinates to numpy arrays
-    src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches])
-    dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches])
+    for match1, match2 in matches:
+        if match1.distance < 0.8 * match2.distance:
+            good_matches.append(match1)
+    good_matches.sort(key=lambda x: x.distance)
+
+    src_points = np.float32([keypoints1[match.queryIdx].pt for match in good_matches]).reshape(-1, 1, 2)
+    dst_points = np.float32([keypoints2[match.trainIdx].pt for match in good_matches]).reshape(-1, 1, 2)
+
+    src_points=src_points.reshape((-1, 2))
+    dst_points=dst_points.reshape((-1, 2))
+    
+    src_pts=src_points.squeeze()
+    dst_pts=dst_points.squeeze()
+    _, inliers = ransac((src_points, dst_points), AffineTransform,
+                         min_samples=4, residual_threshold=8, max_trials=10000)
+
+
+    src_points = src_points[inliers]
+    dst_points = dst_points[inliers]
     M=max(im1.shape[0],im1.shape[1],im2.shape[0],im2.shape[1])
     F= eightpoint(src_pts, dst_pts, M)
     E = essentialMatrix(F, k1,k2)
@@ -381,14 +395,8 @@ def visualOdometry(datafolder, GT_Pose, plot=True):
             pose[:3, :3] = np.dot(R, pose[:3, :3])
             pose[:3, 3] = pose[:3, 3] + np.dot(pose[:3, :3], t)
 
-            # Compute the absolute camera pose using the scaled translation
-            abs_t = np.dot(pose[:3, :3], t)
-            abs_pose = np.eye(4)
-            abs_pose[:3, :3] = pose[:3, :3]
-            abs_pose[:3, 3] = trajectory[i - 1] + abs_t
-
             # Save the absolute camera position in the trajectory
-            trajectory[i, :] = abs_pose[:3, 3]
+            trajectory[i, :] = pose[:3, 3]
     print(trajectory.shape)
     print(trajectory)
     # Plot the camera trajectory if requested
@@ -400,7 +408,7 @@ def visualOdometry(datafolder, GT_Pose, plot=True):
         ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], 'b')
 
         # Plot the ground-truth trajectory in red
-        ax.plot(GT_Pose[:, 3], GT_Pose[:, 7], GT_Pose[:, 11], 'r')
+        #ax.plot(GT_Pose[:, 3], GT_Pose[:, 7], GT_Pose[:, 11], 'r')
 
         # Set the plot title and labels
         ax.set_title('Camera Trajectory')
