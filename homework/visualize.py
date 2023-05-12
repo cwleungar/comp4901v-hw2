@@ -37,7 +37,7 @@ pts1 = np.column_stack((x1, y1))
 pts2 = np.array([epipolarCorrespondence(im1, im2, F, x, y) for x, y in pts1])
 
 
-pts_3d, err ,pts1_proj,pts2_proj =  triangulate(K1@M1, pts1, C2, pts2)
+pts_3d, err  =  triangulate(K1@M1, pts1, C2, pts2)
 print(pts_3d)
 positive_depth_mask = pts_3d[:, 2] > 0 
 pts_3d_positive = pts_3d[positive_depth_mask]
