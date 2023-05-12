@@ -37,10 +37,10 @@ best_M2 = None
 max_num_in_front = 0
 
 # Loop through the four possible M2 matrices
-for M2 in M2s:
-    K2_ext = np.hstack((K2, np.zeros((3, 1))))
 
-    P, err ,pts1_proj,pts2_proj= triangulate(K1@M1, pts1, K2_ext@M2, pts2)
+for i in range(4):
+    M2=M2s[:,:,i]
+    P, err ,pts1_proj,pts2_proj= triangulate(K1@M1, pts1, K2@M2, pts2)
 
     # Check if the projected points have positive depth
     z1 = pts1_proj[:, 2]
@@ -50,7 +50,7 @@ for M2 in M2s:
     print(num_in_front)
     # Update the best M2 matrix and the maximum number of points in front if necessary
     if num_in_front > max_num_in_front:
-        best_M2 = (M2,K2_ext@M2,P)
+        best_M2 = (M2,K2@M2,P)
         max_num_in_front = num_in_front
 # Save the best M2 matrix, C2, and P
 np.savez('q2.4_3.npz', M2=best_M2[0], C2=best_M2[1], P=best_M2[2])
