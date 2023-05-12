@@ -37,8 +37,8 @@ pts1 = np.column_stack((x1, y1))
 pts2 = np.array([epipolarCorrespondence(im1, im2, F, x, y) for x, y in pts1])
 
 
-pts_3d, err ,pts1_proj,pts2_proj =  triangulate(K1@M1, pts1, C2, pts2)
-print(pts_3d)
+pts_3d, err  =  triangulate(K1@M1, pts1, C2, pts2)
+print(err)
 positive_depth_mask = pts_3d[:, 2] > 0 
 pts_3d_positive = pts_3d[positive_depth_mask]
 
@@ -46,7 +46,7 @@ pts_3d_positive = pts_3d[positive_depth_mask]
 # Plot the 3D points
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(pts_3d_positive[:, 0]/np.max(pts_3d_positive[:, 0]), pts_3d_positive[:, 1]/np.max(pts_3d_positive[:, 1]), pts_3d_positive[:, 2]/np.max(pts_3d_positive[:, 2]), c='b', marker='o')
+ax.scatter(pts_3d_positive[:, 0], pts_3d_positive[:, 1], pts_3d_positive[:, 2], c='b', marker='o')
 ax.set_xlabel('X axis')
 ax.set_ylabel('Y axis')
 ax.set_zlabel('Z axis')

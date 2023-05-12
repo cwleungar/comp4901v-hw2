@@ -37,20 +37,25 @@ best_M2 = None
 max_num_in_front = 0
 
 # Loop through the four possible M2 matrices
-for M2 in M2s:
-    K2_ext = np.hstack((K2, np.zeros((3, 1))))
+M= max(img1.shape[0], img1.shape[1], img2.shape[0], img2.shape[1])
 
-    P, err ,pts1_proj,pts2_proj= triangulate(K1@M1, pts1, K2_ext@M2, pts2)
+for i in range(4):
+    M2=M2s[:,:,i]
+    print(pts1.shape,pts2.shape)
+    P, err = triangulate(K1@M1, pts1, K2@M2, pts2)
 
     # Check if the projected points have positive depth
-    z1 = pts1_proj[:, 2]
-    z2 = pts2_proj[:, 2]
+    P_hom = np.hstack((P, np.ones((P.shape[0], 1))))
+    pts1_proj = K1@M1 @ P_hom.T
+    pts2_proj = K2@M2 @ P_hom.T
+    z1 = pts1_proj[2, :]
+    z2 = pts2_proj[2, :]
     in_front = (z1 > 0) & (z2 > 0)
     num_in_front = np.sum(in_front)
     print(num_in_front)
     # Update the best M2 matrix and the maximum number of points in front if necessary
     if num_in_front > max_num_in_front:
-        best_M2 = (M2,K2_ext@M2,P)
+        best_M2 = (M2,K2@M2,P)
         max_num_in_front = num_in_front
 # Save the best M2 matrix, C2, and P
 np.savez('q2.4_3.npz', M2=best_M2[0], C2=best_M2[1], P=best_M2[2])
