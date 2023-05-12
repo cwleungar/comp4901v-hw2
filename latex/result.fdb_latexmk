@@ -1,9 +1,10 @@
 # Fdb version 3
-["pdflatex"] 1683870853 "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.tex" "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.pdf" "result" 1683870855
-  "../homework/2_3_1_fig1.png" 1681544665 1245940 38acee7cc8e3b4c13efa26d30a3970c5 ""
-  "../homework/2_3_2_displayEpipolarF.png" 1683816849 146366 06e259500bd590d52609c5a16359ac61 ""
-  "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.aux" 1683870854 32 c81c40425fbb5e93b90fba65da0b5e61 ""
-  "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.tex" 1683870852 7102 7fea7fd7fb4fe2714c20232e96e4047d ""
+["pdflatex"] 1683872131 "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.tex" "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.pdf" "result" 1683872134
+  "../homework/2_3_1_fig1.png" 1683872105 1174679 b10a68bed9321fe1b8047e86f66a3cf6 ""
+  "../homework/2_3_2_displayEpipolarF.png" 1683872105 161070 7f88558642d5eed5439f5a86689d43c8 ""
+  "../homework/2_5_1_epipolarMatchGUI.png" 1683872105 153532 d2b05fe64551dd1012f2b4a49b44740f ""
+  "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.aux" 1683872134 32 c81c40425fbb5e93b90fba65da0b5e61 ""
+  "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.tex" 1683872130 7273 c1112d19c451ecd12f303f8a45fabf79 ""
   "c:/texlive/2020/texmf-dist/fonts/map/fontname/texfonts.map" 1616150980 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1616149452 1004 54797486969f23fa377b128694d548df ""
   "c:/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1616149452 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -76,11 +77,11 @@
   "c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1616154089 5211361 a2b81fa59c1cb10c93365d810323514d ""
   "c:/texlive/2020/texmf-var/web2c/pdftex/pdflatex.fmt" 1616154220 2706481 ed47d1fbfb405777fce9fb559599169b ""
   "c:/texlive/2020/texmf.cnf" 1616154062 713 e69b156964470283e0530f5060668171 ""
-  "result.aux" 1683870854 32 c81c40425fbb5e93b90fba65da0b5e61 "pdflatex"
-  "result.tex" 1683870852 7102 7fea7fd7fb4fe2714c20232e96e4047d ""
+  "result.aux" 1683872134 32 c81c40425fbb5e93b90fba65da0b5e61 "pdflatex"
+  "result.tex" 1683872130 7273 c1112d19c451ecd12f303f8a45fabf79 ""
   (generated)
-  "result.aux"
-  "result.log"
   "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.log"
+  "result.aux"
   "result.pdf"
+  "result.log"
   "c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.pdf"
