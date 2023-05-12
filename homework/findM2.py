@@ -43,7 +43,7 @@ for i in range(4):
     M2=M2s[:,:,i]
     print(pts1.shape,pts2.shape)
     P, err = triangulate(K1@M1, pts1, K2@M2, pts2)
-
+    print("err",err)
     # Check if the projected points have positive depth
     P_hom = np.hstack((P, np.ones((P.shape[0], 1))))
     pts1_proj = K1@M1 @ P_hom.T
