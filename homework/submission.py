@@ -105,7 +105,7 @@ def triangulate(C1, pts1, C2, pts2):
     err2 = np.linalg.norm(pts2_hom[:,:2] - pts2_proj[:2,:].T, axis=1)
     err = np.sum(err1**2 + err2**2)
     
-    return P, err,pts1_proj,pts2_proj
+    return P, err
     pass
 
 

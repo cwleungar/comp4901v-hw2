@@ -40,11 +40,14 @@ max_num_in_front = 0
 
 for i in range(4):
     M2=M2s[:,:,i]
-    P, err ,pts1_proj,pts2_proj= triangulate(K1@M1, pts1, K2@M2, pts2)
+    P, err = triangulate(K1@M1, pts1, K2@M2, pts2)
 
     # Check if the projected points have positive depth
-    z1 = pts1_proj[:, 2]
-    z2 = pts2_proj[:, 2]
+    P_hom = np.hstack((P, np.ones((P.shape[0], 1))))
+    pts1_proj = K1@M1 @ P_hom.T
+    pts2_proj = K2@M2 @ P_hom.T
+    z1 = pts1_proj[2, :]
+    z2 = pts2_proj[2, :]
     in_front = (z1 > 0) & (z2 > 0)
     num_in_front = np.sum(in_front)
     print(num_in_front)
