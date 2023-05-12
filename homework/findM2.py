@@ -14,10 +14,10 @@ Q2.4.3:
 
 # Initialize variables to keep track of the best M2 matrix and the number of points it triangulates
 img1 = cv2.imread("../data/image1.jpg")
-
+img2 = cv2.imread("../data/image2.jpg")
 data = np.load('q2.3_1.npz')
-pts1 = data['src_points'][:100]
-pts2 = data['dst_points'][:100]
+pts1 = data['src_points'] if data['src_points'].shape[0] < 300 else data['src_points'][0:300]
+pts2 = data['dst_points'] if data['dst_points'].shape[0] < 300 else data['dst_points'][0:300]
 file=open('../data/Intrinsic4Recon.npz','rb')
 file=file.readlines()
 d={}
@@ -28,9 +28,7 @@ for i in file:
 
 K1 = d['K1'].reshape(3,3)
 K2 = d['K2'].reshape(3,3)
-M=max(img1.shape[0],img1.shape[0])
-
-F = eightpoint(pts1, pts2, M)
+F=np.load('q2.3_2.npz')['F']
 E = essentialMatrix(F, K1, K2)
 
 M1 = np.hstack((np.identity(3), np.zeros((3, 1))))
@@ -42,15 +40,17 @@ max_num_in_front = 0
 for M2 in M2s:
     K2_ext = np.hstack((K2, np.zeros((3, 1))))
 
-    P, err = triangulate(K1@M1, pts1, K2_ext@M2, pts2)
-    
-    # Count the number of 3D points that are in front of both cameras
-    num_in_front = np.sum(P[:, 2] > 0)
-    
+    P, err ,pts1_proj,pts2_proj= triangulate(K1@M1, pts1, K2_ext@M2, pts2)
+
+    # Check if the projected points have positive depth
+    z1 = pts1_proj[:, 2]
+    z2 = pts2_proj[:, 2]
+    in_front = (z1 > 0) & (z2 > 0)
+    num_in_front = np.sum(in_front)
+    print(num_in_front)
     # Update the best M2 matrix and the maximum number of points in front if necessary
     if num_in_front > max_num_in_front:
         best_M2 = (M2,K2_ext@M2,P)
         max_num_in_front = num_in_front
-
 # Save the best M2 matrix, C2, and P
 np.savez('q2.4_3.npz', M2=best_M2[0], C2=best_M2[1], P=best_M2[2])

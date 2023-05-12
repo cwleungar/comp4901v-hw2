@@ -78,8 +78,8 @@ Q2.4.2: Triangulate a set of 2D coordinates in the image to a set of 3D points.
 '''
 def triangulate(C1, pts1, C2, pts2):
     # Replace pass by your implementation
-    pts1_hom = np.hstack((pts1, np.ones((pts1.shape[0], 1))))
-    pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1))))
+    pts1_hom = np.hstack((pts1, np.ones((pts1.shape[0], 1), dtype=float)))
+    pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1),dtype=float)))
     
     def fun(p, C1, pts1_hom, C2, pts2_hom):
         P = p.reshape((-1, 3)).T
@@ -91,12 +91,12 @@ def triangulate(C1, pts1, C2, pts2):
         denom2 = err2[2,:]
         denom2[np.isclose(denom2, 0, atol=1e-15)] = 1e-15  # Replace zeros with a small value
         err2 /= denom2
-        pts1_hom_3d = np.vstack((pts1_hom.T, np.ones((1, pts1_hom.shape[0]))))
-        pts2_hom_3d = np.vstack((pts2_hom.T, np.ones((1, pts2_hom.shape[0]))))
+        pts1_hom_3d = np.vstack((pts1_hom.T, np.ones((1, pts1_hom.shape[0]), dtype=float)))
+        pts2_hom_3d = np.vstack((pts2_hom.T, np.ones((1, pts2_hom.shape[0]), dtype=float)))
         return np.concatenate((err1[:2,:] - pts1_hom_3d[:2,:], err2[:2,:] - pts2_hom_3d[:2,:]), axis=None)
     P0 = np.zeros((pts1.shape[0], 3))
     
-    res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom), method='lm')
+    res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom))
     P = res.x.reshape((-1, 3))
     
     pts1_proj = C1 @ np.vstack((P.T, np.ones((1, P.shape[0]))))
@@ -105,7 +105,7 @@ def triangulate(C1, pts1, C2, pts2):
     err2 = np.linalg.norm(pts2_hom[:,:2] - pts2_proj[:2,:].T, axis=1)
     err = np.sum(err1**2 + err2**2)
     
-    return P, err
+    return P, err,pts1_proj,pts2_proj
     pass
 
 
