@@ -37,9 +37,11 @@ best_M2 = None
 max_num_in_front = 0
 
 # Loop through the four possible M2 matrices
+M= max(img1.shape[0], img1.shape[1], img2.shape[0], img2.shape[1])
 
 for i in range(4):
     M2=M2s[:,:,i]
+    print(pts1.shape,pts2.shape)
     P, err = triangulate(K1@M1, pts1, K2@M2, pts2)
 
     # Check if the projected points have positive depth
