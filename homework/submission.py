@@ -74,20 +74,58 @@ Q2.4.2: Triangulate a set of 2D coordinates in the image to a set of 3D points.
             err, the reprojection error.
 '''
 def triangulate(C1, pts1, C2, pts2):
+    x1, y1 = pts1[:, 0], pts1[:, 1]
+    x2, y2 = pts2[:, 0], pts2[:, 1]
+    
+    A1 = np.column_stack((C1[0, 0]-C1[2, 0]*x1, C1[0, 1]-C1[2, 1]*x1, C1[0, 2]-C1[2, 2]*x1, C1[0, 3]-C1[2, 3]*x1))
+    A2 = np.column_stack((C1[1, 0]-C1[2, 0]*y1, C1[1, 1]-C1[2, 1]*y1, C1[1, 2]-C1[2, 2]*y1, C1[1, 3]-C1[2, 3]*y1))
+    A3 = np.column_stack((C2[0, 0]-C2[2, 0]*x2, C2[0, 1]-C2[2, 1]*x2, C2[0, 2]-C2[2, 2]*x2, C2[0, 3]-C2[2, 3]*x2))
+    A4 = np.column_stack((C2[1, 0]-C2[2, 0]*y2, C2[1, 1]-C2[2, 1]*y2, C2[1, 2]-C2[2, 2]*y2, C2[1, 3]-C2[2, 3]*y2))
+
+    # calculate the 3D coordinates for each point
+    N = pts1.shape[0]
+    W = np.zeros((N, 4))
+    for ind in range(N):
+        A = np.vstack((A1[ind, :], A2[ind, :], A3[ind, :], A4[ind, :]))
+        _, _, vh = np.linalg.svd(A)
+        W[ind, :] = vh[-1, :]
+
+    # normalize homogeneous coordinates
+    W = W / W[:, 3].reshape(-1, 1)
+
+    # project to 2D points
+    proj1 = C1 @ W.T
+    proj2 = C2 @ W.T
+    proj1 = proj1[:2, :] / proj1[2, :]
+    proj2 = proj2[:2, :] / proj2[2, :]
+
+    # compute error
+    err = np.sum((proj1.T - pts1)**2 + (proj2.T - pts2)**2)
+
+    return W[:, :3], err
+def triangulate2(C1, pts1, C2, pts2):
     # Replace pass by your implementation
     pts1_hom = np.hstack((pts1, np.ones((pts1.shape[0], 1), dtype=float)))
     pts2_hom = np.hstack((pts2, np.ones((pts2.shape[0], 1),dtype=float)))
     
     def fun(p, C1, pts1_hom, C2, pts2_hom):
-        P = p.reshape((-1, 3))
-        pts1_proj = C1 @ np.vstack((P.T, np.ones((1, P.shape[0]))))
-        pts2_proj = C2 @ np.vstack((P.T, np.ones((1, P.shape[0]))))
-        err1 = np.linalg.norm(pts1_hom[:,:2] - pts1_proj[:2,:].T, axis=1)
-        err2 = np.linalg.norm(pts2_hom[:,:2] - pts2_proj[:2,:].T, axis=1)
-        return np.concatenate((err1.flatten(), err2.flatten()))
-    P0 = np.zeros((pts1.shape[0], 3))
-    
-    res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom))
+        P = p.reshape((-1, 3)).T
+        err1 = C1 @ np.vstack((P, np.ones((1, P.shape[1]))))
+        err2 = C2 @ np.vstack((P, np.ones((1, P.shape[1]))))
+        denom1 = err1[2,:]
+        denom1[np.isclose(denom1, 0, atol=1e3)] = 1e-3  # Replace zeros with a small value
+        err1 /= denom1
+        denom2 = err2[2,:]
+        denom2[np.isclose(denom2, 0, atol=1e-3)] = 1e-3  # Replace zeros with a small value
+        err2 /= denom2
+        pts1_hom_3d = np.vstack((pts1_hom.T, np.ones((1, pts1_hom.shape[0]), dtype=float)))
+        pts2_hom_3d = np.vstack((pts2_hom.T, np.ones((1, pts2_hom.shape[0]), dtype=float)))
+        return np.concatenate((err1[:2,:] - pts1_hom_3d[:2,:], err2[:2,:] - pts2_hom_3d[:2,:]), axis=None)
+    P0 = np.random.rand(pts1.shape[0], 3)
+    P0[:,0] = P0[:,0] * (np.max(pts1[:,0]) - np.min(pts1[:,0])) + np.min(pts1[:,0])
+    P0[:,1] = P0[:,1] * (np.max(pts1[:,1]) - np.min(pts1[:,1])) + np.min(pts1[:,1])
+    P0[:,2] = P0[:,2]
+    res = least_squares(fun, P0.ravel(), args=(C1, pts1_hom, C2, pts2_hom), loss='huber')
     P = res.x.reshape((-1, 3))
     
     pts1_proj = C1 @ np.vstack((P.T, np.ones((1, P.shape[0]))))
@@ -98,7 +136,6 @@ def triangulate(C1, pts1, C2, pts2):
     
     return P, err
     pass
-
 
 
 
@@ -113,7 +150,51 @@ Q2.5.1: 3D visualization of the temple images.
             y2, y-coordinates of the pixel on im2
 
 '''
-def epipolarCorrespondence(im1, im2, f, x1, y1):
+def epipolarCorrespondence(im1, im2, F, x1, y1):
+    # set the size of the window
+    x1, y1 = int(round(x1)), int(round(y1))
+    window_size = 11
+    center = window_size//2
+    sigma = 5
+    search_range = 40
+
+    # create gaussian weight matrix
+    mask = np.ones((window_size, window_size))*center
+    mask = np.repeat(np.array([range(window_size)]), window_size, axis=0) - mask
+    mask = np.sqrt(mask**2+np.transpose(mask)**2)
+    weight = np.exp(-0.5*(mask**2)/(sigma**2))
+    weight /= np.sum(weight)
+
+    if len(im1.shape) > 2:
+        weight = np.repeat(np.expand_dims(weight, axis=2), im1.shape[-1], axis=2)
+
+    # get the epipolar line
+    p = np.array([[x1], [y1], [1]])
+    l2 = np.dot(F, p)
+
+    # get the patch around the pixel in image1
+    patch1 = im1[y1-center:y1+center+1, x1-center:x1+center+1]
+    # get the points on the epipolar line
+    h, w, _ = im2.shape
+    Y = np.array(range(y1-search_range, y1+search_range))
+    X = np.round(-(l2[1]*Y+l2[2])/l2[0]).astype(np.int)
+    valid = (X >= center) & (X < w - center) & (Y >= center) & (Y < h - center)
+    X, Y = X[valid], Y[valid]
+
+    min_dist = None
+    x2, y2 = None, None
+    for i in range(len(X)):
+        # get the patch around the pixel in image2
+        patch2 = im2[Y[i]-center:Y[i]+center+1, X[i]-center:X[i]+center+1]
+        # calculate the distance
+        dist = np.sum((patch1-patch2)**2*weight)
+        if min_dist is None or dist < min_dist:
+            min_dist = dist
+            x2, y2 = X[i], Y[i]
+
+    return x2, y2
+
+def epipolarCorrespondence2(im1, im2, f, x1, y1):
     def find_matching_point(im1, im2, x1, y1, F, window_size=5, sigma=1.0):
         # Compute the window around the point (x1, y1) in im1
         half_window_size = window_size // 2
