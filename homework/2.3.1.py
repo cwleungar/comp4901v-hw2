@@ -17,7 +17,7 @@ keypoints1, descriptors1 = sift.detectAndCompute(gray_img1, None)
 keypoints2, descriptors2 = sift.detectAndCompute(gray_img2, None)
 
 
-bf_matcher = cv2.BFMatcher()
+bf_matcher = cv2.FlannBasedMatcher()
 
 
 matches = bf_matcher.knnMatch(descriptors1, descriptors2, k=2)
