@@ -281,64 +281,55 @@ Q3.1: Decomposition of the essential matrix to rotation and translation.
 
 '''
 def essentialDecomposition(im1, im2, k1, k2):
-    # Replace pass by your implementation
     import cv2
-    import numpy as np
-    from skimage.measure import ransac
-    from skimage.transform import AffineTransform
-    gray_img1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    gray_img2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+    # Convert images to grayscale
+    gray1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    gray2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
 
+    # Use ORB feature detector and descriptor
+    orb = cv2.ORB_create()
 
-    sift = cv2.SIFT_create()
+    # Use Flann-based matcher
+    flann = cv2.FlannBasedMatcher()
 
+    # Detect and match features
+    kp1, des1 = orb.detectAndCompute(gray1, None)
+    kp2, des2 = orb.detectAndCompute(gray2, None)
+    des1 = np.float32(des1)
+    des2 = np.float32(des2)
+    matches = flann.knnMatch(des1, des2, k=2)
 
-    keypoints1, descriptors1 = sift.detectAndCompute(gray_img1, None)
-    keypoints2, descriptors2 = sift.detectAndCompute(gray_img2, None)
-
-
-    bf_matcher = cv2.BFMatcher()
-
-
-    matches = bf_matcher.knnMatch(descriptors1, descriptors2, k=2)
-
+    # Filter matches using Lowe's ratio test
     good_matches = []
-    for match1, match2 in matches:
-        if match1.distance < 0.8 * match2.distance:
-            good_matches.append(match1)
-    good_matches.sort(key=lambda x: x.distance)
+    for m, n in matches:
+        if m.distance < 0.7 * n.distance:
+            good_matches.append(m)
 
-    src_points = np.float32([keypoints1[match.queryIdx].pt for match in good_matches]).reshape(-1, 1, 2)
-    dst_points = np.float32([keypoints2[match.trainIdx].pt for match in good_matches]).reshape(-1, 1, 2)
+    # Convert keypoint coordinates to numpy arrays
+    src_pts = np.float32([kp1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+    dst_pts = np.float32([kp2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
 
-    src_points=src_points.reshape((-1, 2))
-    dst_points=dst_points.reshape((-1, 2))
+    # Estimate the fundamental matrix
+    F, _ = cv2.findFundamentalMat(src_pts, dst_pts, cv2.FM_8POINT)
 
-    _, inliers = ransac((src_points, dst_points), AffineTransform,
-                         min_samples=4, residual_threshold=8, max_trials=10000)
+    # Estimate the essential matrix
+    E = np.dot(np.transpose(k2), np.dot(F, k1))
 
+    # Perform SVD on the essential matrix
+    U, _, Vt = np.linalg.svd(E)
 
-    src_points = src_points[inliers]
-    dst_points = dst_points[inliers]
+    # Ensure that the singular values are consistent
+    if np.linalg.det(U) < 0:
+        U *= -1
+    if np.linalg.det(Vt) < 0:
+        Vt *= -1
 
-    src_pts=src_points.squeeze()
-    dst_pts=dst_points.squeeze()
-    src_points=src_points if src_points.shape[0]<300 else src_points[:300]
-    dst_points=dst_points if dst_points.shape[0]<300 else dst_points[:300]
-    M=max(im1.shape[0],im1.shape[1],im2.shape[0],im2.shape[1])
-    F= eightpoint(src_pts, dst_pts, M)
-    E = essentialMatrix(F, k1,k2)
-
-    # Compute the decomposition of the essential matrix
-    U, _, Vt = svd(E)
+    # Compute the rotation matrix and translation vector
     W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
-    R1 = U @ W @ Vt
+    R = U @ W @ Vt
     t = U[:, 2]
-    # Choose the correct translation vector
-    if t[2] < 0:
-        t *= -1
-    # Return the two possible solutions for rotation and translation
-    return [R1, t]
+
+    return [R, t]
 
 
 '''
@@ -372,7 +363,7 @@ def visualOdometry(datafolder, GT_Pose, plot=True):
 
     # Loop over all image frames in the video sequence
     filelist=os.listdir(datafolder)
-    for i in range(len(filelist)):
+    for i in range(len(filelist)-1):
         # Load the current image frame
         im = cv2.imread(os.path.join(datafolder, str(filelist[i])))
 
@@ -407,7 +398,8 @@ def visualOdometry(datafolder, GT_Pose, plot=True):
 
             # Save the absolute camera position in the trajectory
             trajectory[i, :] = abs_pose[:3, 3]
-
+    print(trajectory.shape)
+    print(trajectory)
     # Plot the camera trajectory if requested
     if plot:
         fig = plt.figure()
