@@ -2,15 +2,15 @@ import cv2
 import numpy as np
 from skimage.measure import ransac
 from skimage.transform import AffineTransform
-img1 = cv2.imread("C:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/data/image1.jpg")
-img2 = cv2.imread("C:/Users/User/OneDrive - HKUST Connect/comp4901v/comp4901v-hw2/data/image2.jpg")
+img1 = cv2.imread("../data/image1.jpg")
+img2 = cv2.imread("../data/image2.jpg")
 
     
 gray_img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 gray_img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
 
-sift = cv2.xfeatures2d.SIFT_create()
+sift = cv2.SIFT_create()
 
 
 keypoints1, descriptors1 = sift.detectAndCompute(gray_img1, None)
@@ -22,12 +22,11 @@ bf_matcher = cv2.BFMatcher()
 
 matches = bf_matcher.knnMatch(descriptors1, descriptors2, k=2)
 
-
 good_matches = []
 for match1, match2 in matches:
-    if match1.distance < 0.75 * match2.distance:
+    if match1.distance < 0.8 * match2.distance:
         good_matches.append(match1)
-
+good_matches.sort(key=lambda x: x.distance)
 
 src_points = np.float32([keypoints1[match.queryIdx].pt for match in good_matches]).reshape(-1, 1, 2)
 dst_points = np.float32([keypoints2[match.trainIdx].pt for match in good_matches]).reshape(-1, 1, 2)
@@ -52,7 +51,7 @@ dst_pts=dst_points.squeeze()
 np.savez('q2.3_1.npz', src_points=src_pts, dst_points=dst_pts)
 
 
-cv2.imwrite('2_3_1.png', img_matches)
+cv2.imwrite('2_3_1_fig1.png', img_matches)
 
 #cv2.imshow('Keypoints and Matches', img_matches)
 #cv2.waitKey(0)

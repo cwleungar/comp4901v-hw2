@@ -32,45 +32,29 @@ F=np.load('q2.5_1.npz')['F']
 im1 = cv2.imread("../data/image1.jpg")
 im2 = cv2.imread("../data/image2.jpg")
 
-M = max(im1.shape[0], im1.shape[1])
+M = max(im1.shape[0], im1.shape[1], im2.shape[0], im2.shape[1])
 pts1 = np.column_stack((x1, y1))
 pts2 = np.array([epipolarCorrespondence(im1, im2, F, x, y) for x, y in pts1])
 
 
-
-pts_3d,err =  triangulate(K1@M1, pts1, C2, pts2)
-positive_depth_mask = pts_3d[:, 2] > 0
+pts_3d, err ,pts1_proj,pts2_proj =  triangulate(K1@M1, pts1, C2, pts2)
+print(pts_3d)
+positive_depth_mask = pts_3d[:, 2] > 0 
 pts_3d_positive = pts_3d[positive_depth_mask]
-flip_x = False
-flip_y = False
-if np.min(pts_3d_positive[:, 0]) < 0:
-    flip_x = True
-if np.min(pts_3d_positive[:, 1]) < 0:
-    flip_y = True
-if flip_x and flip_y:
-    pts_3d_positive[:, :2] *= -1
-else:
-    if flip_x:
-        pts_3d_positive[:, 0] *= -1
-    if flip_y:
-        pts_3d_positive[:, 1] *= -1
 
-# Plot the 3D points with positive depths using scatter
+
+# Plot the 3D points
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(pts_3d_positive[:, 0], pts_3d_positive[:, 1], pts_3d_positive[:, 2], c='b', marker='o')
-
-# Set the axis labels and limits
+ax.scatter(pts_3d_positive[:, 0]/np.max(pts_3d_positive[:, 0]), pts_3d_positive[:, 1]/np.max(pts_3d_positive[:, 1]), pts_3d_positive[:, 2]/np.max(pts_3d_positive[:, 2]), c='b', marker='o')
 ax.set_xlabel('X axis')
 ax.set_ylabel('Y axis')
 ax.set_zlabel('Z axis')
-if flip_x:
-    ax.invert_xaxis()
-if flip_y:
-    ax.invert_yaxis()
-ax.set_xlim(-M/2, M/2)
-ax.set_ylim(-M/2, M/2)
-ax.set_zlim(-M/2, M/2)
 
+# Plot the corresponding image points on img1
+fig2, ax2 = plt.subplots()
+ax2.imshow(im1)
+ax2.scatter(pts1[:, 0], pts1[:, 1], c='r', marker='o')
+ax2.set_title('Image 1 with Corresponding Points')
 plt.show()
 np.savez('q2.5_2.npz', F=F, C1=K1@M1,C2=C2)
