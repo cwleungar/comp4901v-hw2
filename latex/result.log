@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.3.19)  12 MAY 2023 14:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.3.19)  15 MAY 2023 13:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -375,20 +375,39 @@ File: ../homework/2_5_1_epipolarMatchGUI.png Graphic file (type png)
 <use ../homework/2_5_1_epipolarMatchGUI.png>
 Package pdftex.def Info: ../homework/2_5_1_epipolarMatchGUI.png  used on input line 223.
 (pdftex.def)             Requested size: 422.77664pt x 234.64351pt.
-[4 <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_3_2_displayEpipolarF.png> <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_5_1_epipolarMatchGUI.png>] (c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.aux) ) 
+<../homework/2_5_2_1.png, id=28, 462.528pt x 346.896pt>
+File: ../homework/2_5_2_1.png Graphic file (type png)
+<use ../homework/2_5_2_1.png>
+Package pdftex.def Info: ../homework/2_5_2_1.png  used on input line 229.
+(pdftex.def)             Requested size: 422.77664pt x 317.09972pt.
+<../homework/2_5_2_2.png, id=29, 462.528pt x 346.896pt>
+File: ../homework/2_5_2_2.png Graphic file (type png)
+<use ../homework/2_5_2_2.png>
+Package pdftex.def Info: ../homework/2_5_2_2.png  used on input line 230.
+(pdftex.def)             Requested size: 422.77664pt x 317.09972pt.
+[4 <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_3_2_displayEpipolarF.png> <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_5_1_epipolarMatchGUI.png>]
+Overfull \vbox (23.67218pt too high) has occurred while \output is active []
+
+ [5 <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_5_2_1.png> <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/2_5_2_2.png>]
+<../homework/3_2.png, id=40, 462.528pt x 346.896pt>
+File: ../homework/3_2.png Graphic file (type png)
+<use ../homework/3_2.png>
+Package pdftex.def Info: ../homework/3_2.png  used on input line 238.
+(pdftex.def)             Requested size: 422.77664pt x 317.09972pt.
+ [6 <c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/../homework/3_2.png>] (c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.aux) ) 
 Here is how much of TeX's memory you used:
- 4234 strings out of 479014
- 58347 string characters out of 5863086
+ 4252 strings out of 479014
+ 58758 string characters out of 5863086
  392058 words of memory out of 5000000
- 21656 multiletter control sequences out of 15000+600000
+ 21671 multiletter control sequences out of 15000+600000
  410678 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,15n,74p,294b,226s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.pdf (4 pages, 1631259 bytes).
+Output written on c:/Users/User/Documents/GitHub/comp4901v-hw2/latex/result.pdf (6 pages, 1771636 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
- 47 compressed objects within 1 object stream
+ 83 PDF objects out of 1000 (max. 8388607)
+ 51 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 

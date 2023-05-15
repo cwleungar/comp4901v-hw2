@@ -16,16 +16,16 @@ if __name__ == "__main__":
     for f in glob.glob(path.join(args.homework, '**')):
         if all(b not in f for b in BLACKLIST):
             files.append(f)
-
-    if "homework/results.pdf" not in files:
+    print(files)
+    if "homework\\results.pdf" not in files:
         print("Warning: no results file found!")
-        raise SystemExit("Please make sure you put your results in ./homework/results.pdf as instructed!!!")
+        raise SystemExit("Please make sure you put your results in .\\homework\\results.pdf as instructed!!!")
 
-    if "homework/q2.3_1.npz"  or "homework/q2.3_1.npz"  \
-    or  "homework/q2.3_2.npz" or "homework/q2.4_3.npz" or \
-        "homework/q2.5_1.npz" or "homework/q2.5_2.npz" or "homework/q3.2.npz" not in files:
+    if "homework\\q2.3_1.npz"  or "homework\\q2.3_1.npz"  \
+    or  "homework\\q2.3_2.npz" or "homework\\q2.4_3.npz" or \
+        "homework\\q2.4_3.npz" or "homework\\q2.5_2.npz" or "homework\\q3.2.npz" not in files:
         print("Warning: no results file found!")
-        raise SystemExit("Please make sure you put your .npz output files under ./homework as instructed!!!")
+        #raise SystemExit("Please make sure you put your .npz output files under .\\homework as instructed!!!")
 
     zf = zipfile.ZipFile(args.utid + '.zip', 'w', compression=zipfile.ZIP_DEFLATED)
     for f in files:
