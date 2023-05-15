@@ -41,7 +41,7 @@ def eightpoint(pts1, pts2, M):
     F = U @ np.diag(s) @ Vt
 
     # Refine the solution using local minimization
-    #F = helper.refineF(F, pts1, pts2)
+    F = helper.refineF(F, pts1, pts2)
 
     # Unscale the fundamental matrix
     T = np.diag([1/M, 1/M, 1])
