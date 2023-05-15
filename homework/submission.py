@@ -281,6 +281,7 @@ Q3.1: Decomposition of the essential matrix to rotation and translation.
 
 '''
 def essentialDecomposition(im1, im2, k1, k2):
+
     import cv2
     from skimage.measure import ransac
     from skimage.transform import AffineTransform
@@ -299,16 +300,19 @@ def essentialDecomposition(im1, im2, k1, k2):
     bf_matcher = cv2.FlannBasedMatcher()
 
 
-    matches = bf_matcher.knnMatch(descriptors1, descriptors2, k=2)
+    matches = bf_matcher.knnMatch(descriptors1, descriptors2, k=4)
 
     good_matches = []
-    for match1, match2 in matches:
-        if match1.distance < 0.8 * match2.distance:
-            good_matches.append(match1)
+    for match_list in matches:
+        if len(match_list) < 2:
+            continue
+        match1, match2 = match_list[:2]
+        good_matches.append(match1)
+
     good_matches.sort(key=lambda x: x.distance)
 
-    src_points = np.float32([keypoints1[match.queryIdx].pt for match in good_matches]).reshape(-1, 1, 2)
-    dst_points = np.float32([keypoints2[match.trainIdx].pt for match in good_matches]).reshape(-1, 1, 2)
+    src_points = np.float32([keypoints1[match.queryIdx].pt for match in good_matches[:150]]).reshape(-1, 1, 2)
+    dst_points = np.float32([keypoints2[match.trainIdx].pt for match in good_matches[:150]]).reshape(-1, 1, 2)
 
     src_points=src_points.reshape((-1, 2))
     dst_points=dst_points.reshape((-1, 2))
@@ -317,11 +321,10 @@ def essentialDecomposition(im1, im2, k1, k2):
     dst_pts=dst_points.squeeze()
     _, inliers = ransac((src_points, dst_points), AffineTransform,
                          min_samples=4, residual_threshold=8, max_trials=10000)
-
-
     src_points = src_points[inliers]
     dst_points = dst_points[inliers]
     M=max(im1.shape[0],im1.shape[1],im2.shape[0],im2.shape[1])
+    
     F= eightpoint(src_pts, dst_pts, M)
     E = essentialMatrix(F, k1,k2)
 
@@ -329,12 +332,45 @@ def essentialDecomposition(im1, im2, k1, k2):
     U, _, Vt = svd(E)
     W = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
     R1 = U @ W @ Vt
-    t = U[:, 2]
-    # Choose the correct translation vector
-    if t[2] < 0:
-        t *= -1
-    # Return the two possible solutions for rotation and translation
-    return [R1, t]
+    R2 = U @ W.T @ Vt
+    t1 = U[:, 2]
+    t2 = -U[:, 2]
+
+    if np.linalg.det(R1) < 0:
+        R1 *= -1
+        t1 *= -1
+    if np.linalg.det(R2) < 0:
+        R2 *= -1
+        t2 *= -1
+    def formT(R, t):
+        T = np.eye(4, dtype=np.float64)
+        T[:3, :3] = R
+        T[:3, 3] = t
+        return T
+    M2s=[(R1,t1,formT(R1,t1)),(R1,t2,formT(R1,t2)),(R2,t1,formT(R2,t1)),(R2,t2,formT(R2,t2))]
+    M1=np.hstack((np.eye(3), np.zeros((3, 1))))
+    best_M2=None
+    max_num_in_front=0
+    for i in range(4):
+        r,t,M2=M2s[i]
+        t.reshape((3,1))
+        M2c=M2[:3, :]
+        P, err = triangulate(k1@M1, src_points, k2@M2c, dst_points)
+        # Check if the projected points have positive depth
+        P_hom = np.hstack((P, np.ones((P.shape[0], 1))))
+        pts1_proj = k1@M1 @ P_hom.T
+        pts2_proj = k2@M2c @ P_hom.T
+        z1 = pts1_proj[2, :]
+        z2 = pts2_proj[2, :]
+        in_front = (z1 > 0) & (z2 > 0)
+        num_in_front = np.sum(in_front)
+        # Update the best M2 matrix and the maximum number of points in front if necessary
+        if num_in_front > max_num_in_front:
+            best_M2 = (r,t)
+            max_num_in_front = num_in_front
+    # Compute the camera poses for the four possible solutions
+    return best_M2
+
 
 
 '''
@@ -346,6 +382,7 @@ Q3.2: Implement a monocular visual odometry.
 
 '''
 def visualOdometry(datafolder, GT_Pose, plot=True):
+    
     import os
     import cv2
     import matplotlib.pyplot as plt
@@ -362,43 +399,57 @@ def visualOdometry(datafolder, GT_Pose, plot=True):
     K1 = d['K1'].reshape(3,3)
     K2 = d['K2'].reshape(3,3)
     # Initialize the camera trajectory
-    trajectory = np.zeros((len(os.listdir(datafolder)), 3))
+    trajectory = np.zeros((len(os.listdir(datafolder)), 3),dtype= float)
     # Initialize the first camera pose as [I|0]
-    pose = np.eye(4)
-
+    pose=np.hstack((np.eye(3),np.zeros((3,1))))
+    last_R=np.eye(3)
+    last_t=np.zeros((3,1))
     # Loop over all image frames in the video sequence
     filelist=os.listdir(datafolder)
     for i in range(len(filelist)-1):
         # Load the current image frame
         im = cv2.imread(os.path.join(datafolder, str(filelist[i])))
-
+        filelist.sort()
         # Estimate the relative camera motion from the previous frame
+        if i==0:
+            trajectory[i]=GT_Pose[i].reshape((3,4))[:,3]
         if i > 0:
-            # Load the previous image frame
             prev_im = cv2.imread(os.path.join(datafolder, str(filelist[i-1])))
+            #[R1,R2],[t1,t2] = essentialDecomposition(prev_im, im, K1, K2)
+            R,t = essentialDecomposition(prev_im, im, K1, K2)
+            #poses = [np.hstack([R, t.reshape(3, 1)]) for R, t in [(R1, t1), (R1, t2), (R2, t1), (R2, t2)]]
+            # Select the camera pose that is most consistent with the ground truth pose
 
-            # Estimate the fundamental matrix and essential matrix
-            [R, t] = essentialDecomposition(prev_im, im, K1, K2)
-            t_hat = np.array([[0, -t[2], t[1]],
-                      [t[2], 0, -t[0]],
-                      [-t[1], t[0], 0]])
-
-            # Compute the Essential matrix
-            E = np.dot(t_hat, R)
-            E = np.dot(np.transpose(K1), np.dot(E, K2))
-
-              # Scale the translation using the ground-truth data
-            scale = helper.getAbsoluteScale(GT_Pose[i - 1], GT_Pose[i])
-            t = scale * t
-
-            # Update the camera pose using the relative rotation and scaled translation
-            pose[:3, :3] = np.dot(R, pose[:3, :3])
-            pose[:3, 3] = pose[:3, 3] + np.dot(pose[:3, :3], t)
-
-            # Save the absolute camera position in the trajectory
-            trajectory[i, :] = pose[:3, 3]
-    print(trajectory.shape)
-    print(trajectory)
+            # R and t are the relative rotation and translation between the current and the previous frame
+            # We need to compute the absolute pose of the current frame
+            # ti = ti−1 + scale ∗ (R i-1−>i ∗ t i-1−>i)
+            tGT1=GT_Pose[i-1].reshape((3,4))[:,3]
+            tGT2=GT_Pose[i].reshape((3,4))[:,3]
+            scale = helper.getAbsoluteScale(tGT1, tGT2)
+            #cur_t = cur_t + scale*cur_R@t.reshape((3, 1))
+            #cur_R = R@cur_R
+#
+            RGT1=GT_Pose[i-1].reshape((3,4))[:,:3]
+            RGT2=GT_Pose[i].reshape((3,4))[:,:3]
+#
+            #R_rel=RGT2.T@RGT1
+            #t_rel = tGT2 - tGT1
+            #P_prev = np.hstack((last_R, trajectory[i-1].reshape((3,1))))
+            #P_curr = np.hstack((R, t.reshape((3,1))))
+            #P_prev =GT_Pose[i-1].reshape((3,4))
+            # Compute the relative rotation and translation between the two frames
+            R_rel = R @ last_R.T #R @ np.linalg.inv(P_prev[:, :3])
+            #t_rel = t.reshape((3, 1))
+            #t_rel = np.linalg.inv(P_prev[:, :3]) @ (t_rel - P_prev[:, 3].reshape((3, 1)))
+            t=t.reshape((3,1))
+            t_rel = last_t + last_R.T @ (t - last_t)
+            ## Compute the absolute translation vector of the current frame
+            rti = scale * (R_rel @ t_rel.reshape((3,1)))
+            trajectory[i] = trajectory[i-1] + rti.reshape((3,))
+            last_R = R
+            last_t = t
+        if i%20==0:
+            print(i,trajectory[i])
     # Plot the camera trajectory if requested
     if plot:
         fig = plt.figure()
@@ -408,7 +459,7 @@ def visualOdometry(datafolder, GT_Pose, plot=True):
         ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], 'b')
 
         # Plot the ground-truth trajectory in red
-        #ax.plot(GT_Pose[:, 3], GT_Pose[:, 7], GT_Pose[:, 11], 'r')
+        ax.plot(GT_Pose[:, 3], GT_Pose[:, 7], GT_Pose[:, 11], 'r')
 
         # Set the plot title and labels
         ax.set_title('Camera Trajectory')

@@ -42,6 +42,8 @@ M= max(img1.shape[0], img1.shape[1], img2.shape[0], img2.shape[1])
 for i in range(4):
     M2=M2s[:,:,i]
     print(pts1.shape,pts2.shape)
+    print(K2.shape)
+    print(M2.shape)
     P, err = triangulate(K1@M1, pts1, K2@M2, pts2)
     print("err",err)
     # Check if the projected points have positive depth
